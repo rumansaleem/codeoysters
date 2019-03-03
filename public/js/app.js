@@ -1886,6 +1886,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SpeechToText__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SpeechToText */ "./resources/js/components/SpeechToText.vue");
+/* harmony import */ var _TextToSpeech__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../TextToSpeech */ "./resources/js/TextToSpeech.js");
+//
 //
 //
 //
@@ -1901,6 +1903,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     apiKey: {
@@ -1908,7 +1911,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    SpeechToText: _SpeechToText__WEBPACK_IMPORTED_MODULE_0__["default"]
+    SpeechToText: _SpeechToText__WEBPACK_IMPORTED_MODULE_0__["default"],
+    TextToSpeech: _TextToSpeech__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
@@ -1936,7 +1940,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    onMessageReady: function onMessageReady(results) {
+    speak: function speak(text) {
+      var url = "http://ivrapi.indiantts.co.in/tts?type=indiantts&text=".concat(text, "&api_key=588af6d0-3b52-11e9-8795-0b4320c1e23d&user_id=56791&action=play&numeric=hcurrency&lang=hi_mohita");
+      new Audio(url).play(); // let tts = new TextToSpeech(this.apiKey);
+      // tts.synthesize(text, 'en-IN').then(uri => {
+      //     (new Audio(uri)).play();
+      // }).catch(err => {
+      //     console.log(err)
+      // });
+    },
+    onRecognition: function onRecognition(results) {
       var _this = this;
 
       var text = results[0].alternatives[0].transcript;
@@ -1950,6 +1963,8 @@ __webpack_require__.r(__webpack_exports__);
           var text = data.data.translations[0].translatedText;
 
           _this.messages.push(text);
+
+          _this.speak(text);
         });
         return;
       }
@@ -1979,7 +1994,11 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this2.translate(response.data, _this2.selectedLanguage.split('-')[0]).then(function (_ref3) {
           var data = _ref3.data;
-          return _this2.messages.push(data.data.translations[0].translatedText);
+          var text = data.data.translations[0].translatedText;
+
+          _this2.messages.push(text);
+
+          _this2.speak(text);
         });
 
         _this2.newMessage = '';
@@ -37267,11 +37286,13 @@ var render = function() {
             "api-key": _vm.apiKey,
             "language-code": _vm.selectedLanguage
           },
-          on: { text: _vm.onMessageReady }
+          on: { text: _vm.onRecognition }
         })
       ],
       1
-    )
+    ),
+    _vm._v(" "),
+    _c("button", { on: { click: _vm.speak } }, [_vm._v("Speak")])
   ])
 }
 var staticRenderFns = []
@@ -49452,6 +49473,91 @@ module.exports = function(module) {
 	}
 	return module;
 };
+
+
+/***/ }),
+
+/***/ "./resources/js/TextToSpeech.js":
+/*!**************************************!*\
+  !*** ./resources/js/TextToSpeech.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return TextToSpeech; });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var TextToSpeech =
+/*#__PURE__*/
+function () {
+  function TextToSpeech(key) {
+    _classCallCheck(this, TextToSpeech);
+
+    this.url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=" + encodeURIComponent(key);
+  }
+
+  _createClass(TextToSpeech, [{
+    key: "synthesize",
+    value: function synthesize(text, language) {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        var params = {
+          input: {
+            text: text
+          },
+          voice: {
+            languageCode: language
+          },
+          audioConfig: {
+            audioEncoding: "LINEAR16"
+          }
+        };
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(_this.url, params).then(function (_ref) {
+          var data = _ref.data;
+
+          _this.decodeBase64DataUri(data.audioContent).then(function (uri) {
+            resolve(uri);
+          }).then(reject);
+        }).catch(reject);
+      });
+    }
+  }, {
+    key: "decodeBase64DataUri",
+    value: function decodeBase64DataUri(b64String) {
+      var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'audio/wav';
+      var bytesArray = new Uint8Array(Array.from(atob(b64String)).map(function (char) {
+        return char.charCodeAt(0);
+      }));
+      return new Promise(function (resolve) {
+        var reader = new FileReader();
+        reader.addEventListener('load', function () {
+          return resolve(reader.result);
+        });
+        reader.addEventListener('error', function (e) {
+          return reject(e);
+        });
+        reader.readAsDataURL(new Blob([bytesArray], {
+          type: type
+        }));
+        console.log("reading");
+      });
+    }
+  }]);
+
+  return TextToSpeech;
+}();
+
 
 
 /***/ }),

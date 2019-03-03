@@ -5,20 +5,22 @@
         </div>
         <ul class="list-reset">
             <li class="my-1" v-for="(message,i) in messages" :key="i" v-text="message"></li>
-        </ul>        
+        </ul>
         <div class="mt-4 px-3 inline-flex items-center border rounded-full">
             <input type="text" class="py-2" @keydown.enter="submit" v-model="newMessage">
-            <speech-to-text @text="onMessageReady" :api-key="apiKey" :language-code="selectedLanguage"></speech-to-text>
+            <speech-to-text @text="onRecognition" :api-key="apiKey" :language-code="selectedLanguage"></speech-to-text>
         </div>
+        <button @click="speak">Speak</button>
     </div>
 </template>
 <script>
 import SpeechToText from './SpeechToText';
+import TextToSpeech from '../TextToSpeech';
 export default {
     props: {
         apiKey: {required: true}
     },
-    components: {SpeechToText},
+    components: {SpeechToText, TextToSpeech},
     data() {
         return {
             messages: [],
@@ -56,16 +58,29 @@ export default {
         }
     },
     methods: {
-        onMessageReady(results) {
+        speak(text) {
+            
+            let url = `http://ivrapi.indiantts.co.in/tts?type=indiantts&text=${text}&api_key=588af6d0-3b52-11e9-8795-0b4320c1e23d&user_id=56791&action=play&numeric=hcurrency&lang=hi_mohita`
+            new Audio(url).play()
+            // let tts = new TextToSpeech(this.apiKey);
+            // tts.synthesize(text, 'en-IN').then(uri => {
+            //     (new Audio(uri)).play();
+            // }).catch(err => {
+            //     console.log(err)
+            // });
+        },
+        onRecognition(results) {
             let text = results[0].alternatives[0].transcript;
             let key = text.toLowerCase().trim();
             if(!this.explicitSelection && this.languages.hasOwnProperty(key)) {
                 this.selectedLanguage = this.languages[key];
                 this.explicitSelection = true;
-                this.translate('Your selected language is ' + text, this.selectedLanguage.split('-')[0]).then(({data}) => {
-                    let text = data.data.translations[0].translatedText
-                    this.messages.push(text);
-                });
+                this.translate('Your selected language is ' + text, this.selectedLanguage.split('-')[0])
+                    .then(({data}) => {
+                        let text = data.data.translations[0].translatedText
+                        this.messages.push(text);
+                        this.speak(text);
+                    });
                 return;
             }
             this.messages.push(text);
@@ -81,11 +96,15 @@ export default {
             });
         },
         submit() {
-            axios.get('/dialogflow', {params:{
+            axios.get('/dialogflow', { params:{
                 text: this.newMessage
             }}).then(response => {
                 this.translate(response.data, this.selectedLanguage.split('-')[0])
-                    .then(({ data })=> this.messages.push(data.data.translations[0].translatedText))
+                    .then(({ data })=> {
+                        let text = data.data.translations[0].translatedText;
+                        this.messages.push(text);
+                        this.speak(text);
+                    })
                 this.newMessage = ''
             }).catch(error => console.log(error.response));
         },

@@ -39,9 +39,6 @@ export default {
                 this.$emit('text', response.data.results);
             }).catch(({response}) => console.log(response));
         },
-    },
-    mounted() {
-        console.log(this.apiKey);
     }
 }
 </script>

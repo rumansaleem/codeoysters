@@ -1770,7 +1770,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     maxDuration: {
@@ -1792,14 +1791,6 @@ __webpack_require__.r(__webpack_exports__);
       recorder: null,
       encoder: null
     };
-  },
-  computed: {
-    buttonStyle: function buttonStyle() {
-      return {
-        padding: '10px',
-        backgroundColor: this.isRecording ? 'green' : 'grey'
-      };
-    }
   },
   methods: {
     toggleMic: function toggleMic() {
@@ -2008,9 +1999,6 @@ __webpack_require__.r(__webpack_exports__);
         params: params
       });
     }
-  },
-  mounted: function mounted() {
-    console.log(this.apiKey);
   }
 });
 
@@ -2117,9 +2105,6 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(response);
       });
     }
-  },
-  mounted: function mounted() {
-    console.log(this.apiKey);
   }
 });
 
@@ -37167,34 +37152,29 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "button",
-    { style: _vm.buttonStyle, on: { click: _vm.toggleMic } },
-    [
-      _c(
-        "svg",
-        {
+  return _c("button", { on: { click: _vm.toggleMic } }, [
+    _c(
+      "svg",
+      {
+        attrs: {
+          viewBox: "0 0 20 20",
+          version: "1.1",
+          xmlns: "http://www.w3.org/2000/svg",
+          "xmlns:xlink": "http://www.w3.org/1999/xlink",
+          height: "1em"
+        }
+      },
+      [
+        _c("path", {
           attrs: {
-            viewBox: "0 0 20 20",
-            version: "1.1",
-            xmlns: "http://www.w3.org/2000/svg",
-            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-            height: "1em"
+            d:
+              "M9,18 L9,16.9379599 C5.05368842,16.4447356 2,13.0713165 2,9 L4,9 L4,9.00181488 C4,12.3172241 6.6862915,15 10,15 C13.3069658,15 16,12.314521 16,9.00181488 L16,9 L18,9 C18,13.0790094 14.9395595,16.4450043 11,16.9378859 L11,18 L14,18 L14,20 L6,20 L6,18 L9,18 L9,18 Z M6,4.00650452 C6,1.79377317 7.79535615,0 10,0 C12.209139,0 14,1.79394555 14,4.00650452 L14,8.99349548 C14,11.2062268 12.2046438,13 10,13 C7.790861,13 6,11.2060545 6,8.99349548 L6,4.00650452 L6,4.00650452 Z",
+            fill: "#000"
           }
-        },
-        [
-          _c("path", {
-            attrs: {
-              d:
-                "M9,18 L9,16.9379599 C5.05368842,16.4447356 2,13.0713165 2,9 L4,9 L4,9.00181488 C4,12.3172241 6.6862915,15 10,15 C13.3069658,15 16,12.314521 16,9.00181488 L16,9 L18,9 C18,13.0790094 14.9395595,16.4450043 11,16.9378859 L11,18 L14,18 L14,20 L6,20 L6,18 L9,18 L9,18 Z M6,4.00650452 C6,1.79377317 7.79535615,0 10,0 C12.209139,0 14,1.79394555 14,4.00650452 L14,8.99349548 C14,11.2062268 12.2046438,13 10,13 C7.790861,13 6,11.2060545 6,8.99349548 L6,4.00650452 L6,4.00650452 Z",
-              fill: "#000"
-            }
-          })
-        ]
-      ),
-      _vm._v(" \n    Start\n")
-    ]
-  )
+        })
+      ]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -37218,13 +37198,14 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "flex flex-col items-center" }, [
     !_vm.explicitSelection
       ? _c(
           "div",
           _vm._l(_vm.instructions, function(instruction) {
             return _c("p", {
               key: instruction,
+              staticClass: "my-1",
               domProps: { textContent: _vm._s(instruction) }
             })
           }),
@@ -37234,14 +37215,20 @@ var render = function() {
     _vm._v(" "),
     _c(
       "ul",
+      { staticClass: "list-reset" },
       _vm._l(_vm.messages, function(message, i) {
-        return _c("li", { key: i, domProps: { textContent: _vm._s(message) } })
+        return _c("li", {
+          key: i,
+          staticClass: "my-1",
+          domProps: { textContent: _vm._s(message) }
+        })
       }),
       0
     ),
     _vm._v(" "),
     _c(
       "div",
+      { staticClass: "mt-4 px-3 inline-flex items-center border rounded-full" },
       [
         _c("input", {
           directives: [
@@ -37252,6 +37239,7 @@ var render = function() {
               expression: "newMessage"
             }
           ],
+          staticClass: "py-2",
           attrs: { type: "text" },
           domProps: { value: _vm.newMessage },
           on: {
@@ -49775,15 +49763,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!**************************************************!*\
   !*** ./resources/js/components/SpeechToText.vue ***!
   \**************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SpeechToText_vue_vue_type_template_id_14285696___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SpeechToText.vue?vue&type=template&id=14285696& */ "./resources/js/components/SpeechToText.vue?vue&type=template&id=14285696&");
 /* harmony import */ var _SpeechToText_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SpeechToText.vue?vue&type=script&lang=js& */ "./resources/js/components/SpeechToText.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _SpeechToText_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _SpeechToText_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -49813,7 +49800,7 @@ component.options.__file = "resources/js/components/SpeechToText.vue"
 /*!***************************************************************************!*\
   !*** ./resources/js/components/SpeechToText.vue?vue&type=script&lang=js& ***!
   \***************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

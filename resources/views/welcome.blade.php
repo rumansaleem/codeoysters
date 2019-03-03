@@ -8,15 +8,15 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
+        <link rel="stylesheet" href="/css/app.css">
         
     </head>
-    <body>
-        <div class="flex-center position-ref full-height">
+    <body class="font-sans">
+        <div class="flex justify-center relative min-h-screen">
             <div class="content">
-                <div class="title m-b-md">
+                <h2 class="text-3xl text-center my-4">
                     Codeoysters
-                </div>
+                </h2>
                 <div id="app">
                     <chatbot-component api-key="{{ config('services.google-cloud.key') }}"></chatbot-component>
                 </div>

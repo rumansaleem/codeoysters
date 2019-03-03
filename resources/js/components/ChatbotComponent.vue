@@ -1,13 +1,13 @@
 <template>
-    <div>   
+    <div class="flex flex-col items-center">   
         <div v-if="!explicitSelection">
-            <p v-for="instruction in instructions" :key="instruction" v-text="instruction"></p>
+            <p class="my-1" v-for="instruction in instructions" :key="instruction" v-text="instruction"></p>
         </div>
-        <ul>
-            <li v-for="(message,i) in messages" :key="i" v-text="message"></li>
+        <ul class="list-reset">
+            <li class="my-1" v-for="(message,i) in messages" :key="i" v-text="message"></li>
         </ul>        
-        <div>
-            <input type="text" @keydown.enter="submit" v-model="newMessage">
+        <div class="mt-4 px-3 inline-flex items-center border rounded-full">
+            <input type="text" class="py-2" @keydown.enter="submit" v-model="newMessage">
             <speech-to-text @text="onMessageReady" :api-key="apiKey" :language-code="selectedLanguage"></speech-to-text>
         </div>
     </div>
@@ -98,9 +98,6 @@ export default {
             };
             return axios.post(`https://translation.googleapis.com/language/translate/v2`, null, {params})
         },
-    },
-    mounted() {
-        console.log(this.apiKey);
     }
 }
 </script>

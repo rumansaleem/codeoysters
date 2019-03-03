@@ -59,15 +59,23 @@ export default {
     },
     methods: {
         speak(text) {
-            
-            let url = `http://ivrapi.indiantts.co.in/tts?type=indiantts&text=${text}&api_key=588af6d0-3b52-11e9-8795-0b4320c1e23d&user_id=56791&action=play&numeric=hcurrency&lang=hi_mohita`
-            new Audio(url).play()
-            // let tts = new TextToSpeech(this.apiKey);
-            // tts.synthesize(text, 'en-IN').then(uri => {
-            //     (new Audio(uri)).play();
-            // }).catch(err => {
-            //     console.log(err)
-            // });
+            let langCodes = {
+                "en":'en_mohita',
+                "hi":'hi_mohita',
+                "mr": "mr_mohita",
+                "kn": "kn_dipa",
+                "gu": "gu_rashmi",
+            }
+            let key = this.selectedLanguage.split('-')[0];
+            if(!langCodes.hasOwnProperty(key)) {
+                return;
+            }
+            let lang = langCodes[key];
+            let url = `http://ivrapi.indiantts.co.in/tts?type=indiantts&text=${text}&api_key=588af6d0-3b52-11e9-8795-0b4320c1e23d&user_id=56791&action=play&numeric=hcurrency&lang=${lang}`
+            let audio = new Audio();
+            audio.addEventListener('canplaythrough', () => audio.play());
+            audio.src = url;
+            audio.load();
         },
         onRecognition(results) {
             let text = results[0].alternatives[0].transcript;

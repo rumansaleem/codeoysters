@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Google\Cloud\Dialogflow\V2\SessionsClient;
 use Google\Cloud\Dialogflow\V2\TextInput;
 use Google\Cloud\Dialogflow\V2\QueryInput;
+use Google\Cloud\Dialogflow\V2\QueryParameters;
+use Session;
 
 class DialogflowController extends Controller
 {
@@ -23,9 +25,15 @@ class DialogflowController extends Controller
 
         $queryInput = new QueryInput();
         $queryInput->setText($textInput);
+        
+        $queryParams = new QueryParameters();
 
-        $response = $client->detectIntent($session, $queryInput);
+        $queryParams->setContexts(Session::get('dialogflow_contexts') ?? []);
+        
+        $response = $client->detectIntent($session, $queryInput, [$queryParams]);
 
+        Session::put('dialogflow_contexts', $response->getQueryResult()->getOutputContexts());
+        
         return $response->getQueryResult()->getFulfillmentText();
     }
 }
